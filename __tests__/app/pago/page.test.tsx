@@ -69,7 +69,7 @@ describe('PaymentMethod (pruebas esenciales)', () => {
     expect(global.alert).toHaveBeenCalledWith('Procesando pago con MercadoPago...')
   })
 
-  it('debería mostrar formulario de tarjeta al hacer clic en pagar con tarjeta', async () => {
+  it('debería mostrar errores de validación si se intenta pagar sin completar campos', async () => {
     const user = userEvent.setup()
     
     render(
@@ -86,9 +86,16 @@ describe('PaymentMethod (pruebas esenciales)', () => {
 
     // Verificar que se muestra el formulario de tarjeta
     expect(screen.getByText('Datos de Tarjeta')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('1234 5678 9012 3456')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('Juan Pérez')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('MM/AA')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('123')).toBeInTheDocument()
+
+    // Intentar enviar el formulario sin completar ningún campo
+    const submitButton = screen.getByText('💳 Pagar $1499 ARS')
+    await user.click(submitButton)
+
+    // Verificar que se muestran los errores de validación para todos los campos
+    const errorMessages = screen.getAllByText('Este campo es obligatorio')
+    expect(errorMessages).toHaveLength(4)
+    
+    // Verificar que no se llama a onPaymentSuccess porque hay errores
+    expect(mockOnPaymentSuccess).not.toHaveBeenCalled()
   })
 }) 
