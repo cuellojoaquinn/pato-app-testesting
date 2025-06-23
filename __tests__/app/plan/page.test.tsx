@@ -17,7 +17,7 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Mock del componente PaymentMethod
-jest.mock('@/app/pago/page', () => {
+jest.mock('@/components/PaymentMethod', () => {
   return function MockPaymentMethod({ selectedPlan, onPaymentSuccess, onBack }: any) {
     return (
       <div data-testid="payment-method">

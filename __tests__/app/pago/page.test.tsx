@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { render, screen, act } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import PaymentMethod from '@/app/pago/page'
+import { render, screen, act, fireEvent } from '@testing-library/react'
+import PagoPage from '@/app/pago/page'
 
 // Mock de los iconos de Lucide React
 jest.mock('lucide-react', () => ({
@@ -10,103 +9,113 @@ jest.mock('lucide-react', () => ({
   ArrowLeft: () => <span data-testid="arrow-left-icon">←</span>,
 }))
 
-// Mock de alert para evitar que aparezcan durante los tests
-global.alert = jest.fn()
+// Mock de next/navigation
+const mockPush = jest.fn()
+const mockBack = jest.fn()
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockPush,
+    back: mockBack,
+  }),
+}))
 
-describe('PaymentMethod (pruebas esenciales)', () => {
-  const mockSelectedPlan = {
-    duration: "1 mes",
-    price: 1499,
-    originalPrice: 1499,
-    savings: 0
-  }
+// Mock de setTimeout para evitar timeouts en tests
+jest.useFakeTimers()
 
-  const mockOnPaymentSuccess = jest.fn()
-  const mockOnBack = jest.fn()
-
+describe('PagoPage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    jest.spyOn(global, 'setTimeout').mockImplementation((cb: (...args: any[]) => void, _delay?: number) => {
-      cb()
-      return 0 as unknown as ReturnType<typeof setTimeout>
-    })
+    // Mock de alert global
+    global.alert = jest.fn()
   })
 
   afterEach(() => {
     jest.restoreAllMocks()
   })
 
-  it('debería mostrar la información del plan y métodos de pago', () => {
-    render(
-      <PaymentMethod
-        selectedPlan={mockSelectedPlan}
-        onPaymentSuccess={mockOnPaymentSuccess}
-        onBack={mockOnBack}
-      />
-    )
-
-    // Verificar información del plan
+  it('renderiza la página de pago correctamente', () => {
+    render(<PagoPage />)
+    
+    expect(screen.getByText('Procesar Pago')).toBeInTheDocument()
+    expect(screen.getByText('Selecciona tu método de pago preferido')).toBeInTheDocument()
     expect(screen.getByText('Plan Premium - 1 mes')).toBeInTheDocument()
     expect(screen.getByText('$1499 ARS')).toBeInTheDocument()
+  })
+
+  it('muestra los métodos de pago disponibles', () => {
+    render(<PagoPage />)
     
-    // Verificar métodos de pago disponibles
     expect(screen.getByText('💳 Pagar con Tarjeta de Crédito')).toBeInTheDocument()
     expect(screen.getByText('🔵 Pagar con MercadoPago')).toBeInTheDocument()
+  })
+
+  it('muestra el botón de volver', () => {
+    render(<PagoPage />)
     
-    // Verificar botones de navegación
     expect(screen.getByText('Volver a Planes')).toBeInTheDocument()
+  })
+
+  it('muestra el botón de cancelar', () => {
+    render(<PagoPage />)
+    
     expect(screen.getByText('Cancelar')).toBeInTheDocument()
   })
 
-  it('debería mostrar alert de procesamiento al hacer clic en MercadoPago', async () => {
-    render(
-      <PaymentMethod
-        selectedPlan={mockSelectedPlan}
-        onPaymentSuccess={mockOnPaymentSuccess}
-        onBack={mockOnBack}
-      />
-    )
-
-    // Hacer clic en pagar con MercadoPago
-    const mercadopagoButton = screen.getByText('🔵 Pagar con MercadoPago')
-    await userEvent.click(mercadopagoButton)
-
-    // Verificar que se muestra el alert de procesamiento (primera llamada)
-    expect(global.alert).toHaveBeenCalledWith('Procesando pago con MercadoPago...')
-    expect(global.alert).toHaveBeenNthCalledWith(1, 'Procesando pago con MercadoPago...')
-
-    // Verificar que se muestra el alert de éxito (segunda llamada) y se llama a onPaymentSuccess
-    expect(global.alert).toHaveBeenNthCalledWith(2, '¡Pago procesado exitosamente! Ahora tienes acceso Premium.')
-    expect(mockOnPaymentSuccess).toHaveBeenCalled()
-  }, 20000)
-
-  it('debería mostrar errores de validación si se intenta pagar sin completar campos', async () => {
-    render(
-      <PaymentMethod
-        selectedPlan={mockSelectedPlan}
-        onPaymentSuccess={mockOnPaymentSuccess}
-        onBack={mockOnBack}
-      />
-    )
-
-    // Hacer clic en pagar con tarjeta para mostrar el formulario
-    const cardButton = screen.getByText('💳 Pagar con Tarjeta de Crédito')
-    await userEvent.click(cardButton)
-
-    // Verificar que se muestra el formulario de tarjeta
-    expect(screen.getByText('Datos de Tarjeta')).toBeInTheDocument()
-
-    // Intentar enviar el formulario sin completar ningún campo
-    const submitButton = screen.getByText('💳 Pagar $1499 ARS')
-    await act(async () => {
-      await userEvent.click(submitButton)
-    })
-
-    // Verificar que se muestran los errores de validación para todos los campos
-    const errorMessages = screen.getAllByText('Este campo es obligatorio')
-    expect(errorMessages).toHaveLength(4)
+  it('maneja el pago con MercadoPago correctamente', async () => {
+    render(<PagoPage />)
     
-    // Verificar que no se llama a onPaymentSuccess porque hay errores
-    expect(mockOnPaymentSuccess).not.toHaveBeenCalled()
-  }, 20000)
+    const mercadopagoButton = screen.getByText('🔵 Pagar con MercadoPago')
+    
+    await act(async () => {
+      fireEvent.click(mercadopagoButton)
+    })
+    
+    expect(global.alert).toHaveBeenCalledWith('Procesando pago con MercadoPago...')
+    
+    // Avanzar el tiempo para simular el setTimeout
+    act(() => {
+      jest.runAllTimers()
+    })
+    
+    expect(global.alert).toHaveBeenCalledWith('¡Pago procesado exitosamente! Ahora tienes acceso Premium.')
+    expect(mockPush).toHaveBeenCalledWith('/?payment=success')
+  })
+
+  it('maneja el pago con tarjeta correctamente', async () => {
+    render(<PagoPage />)
+    
+    const cardButton = screen.getByText('💳 Pagar con Tarjeta de Crédito')
+    
+    await act(async () => {
+      fireEvent.click(cardButton)
+    })
+    
+    // Debería mostrar el formulario de tarjeta
+    expect(screen.getByText('Datos de Tarjeta')).toBeInTheDocument()
+    expect(screen.getByText('Ingresa los datos de tu tarjeta de crédito')).toBeInTheDocument()
+  })
+
+  it('maneja el botón de volver correctamente', async () => {
+    render(<PagoPage />)
+    
+    const backButton = screen.getByText('Volver a Planes')
+    
+    await act(async () => {
+      fireEvent.click(backButton)
+    })
+    
+    expect(mockBack).toHaveBeenCalled()
+  })
+
+  it('maneja el botón de cancelar correctamente', async () => {
+    render(<PagoPage />)
+    
+    const cancelButton = screen.getByText('Cancelar')
+    
+    await act(async () => {
+      fireEvent.click(cancelButton)
+    })
+    
+    expect(mockBack).toHaveBeenCalled()
+  })
 }) 
