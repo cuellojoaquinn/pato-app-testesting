@@ -21,6 +21,20 @@ const localStorageMock = {
 }
 global.localStorage = localStorageMock
 
+// Mock window.confirm
+global.confirm = jest.fn()
+
+// Mock window.setTimeout
+global.setTimeout = jest.fn((callback, delay) => {
+  if (delay === 0) {
+    callback()
+  }
+  return 1
+})
+
+// Mock window.clearTimeout
+global.clearTimeout = jest.fn() 
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -35,3 +49,12 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 }) 
+})
+
+// Mock ResizeObserver para Radix UI
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+global.ResizeObserver = ResizeObserver; 
