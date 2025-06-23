@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import PaymentMethod from '@/app/pago/page'
 
@@ -26,6 +26,14 @@ describe('PaymentMethod (pruebas esenciales)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.spyOn(global, 'setTimeout').mockImplementation((cb: (...args: any[]) => void, _delay?: number) => {
+      cb()
+      return 0 as unknown as ReturnType<typeof setTimeout>
+    })
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('debería mostrar la información del plan y métodos de pago', () => {
@@ -51,8 +59,6 @@ describe('PaymentMethod (pruebas esenciales)', () => {
   })
 
   it('debería mostrar alert de procesamiento al hacer clic en MercadoPago', async () => {
-    const user = userEvent.setup()
-    
     render(
       <PaymentMethod
         selectedPlan={mockSelectedPlan}
@@ -63,15 +69,18 @@ describe('PaymentMethod (pruebas esenciales)', () => {
 
     // Hacer clic en pagar con MercadoPago
     const mercadopagoButton = screen.getByText('🔵 Pagar con MercadoPago')
-    await user.click(mercadopagoButton)
+    await userEvent.click(mercadopagoButton)
 
-    // Verificar que se muestra el alert de procesamiento
+    // Verificar que se muestra el alert de procesamiento (primera llamada)
     expect(global.alert).toHaveBeenCalledWith('Procesando pago con MercadoPago...')
-  })
+    expect(global.alert).toHaveBeenNthCalledWith(1, 'Procesando pago con MercadoPago...')
+
+    // Verificar que se muestra el alert de éxito (segunda llamada) y se llama a onPaymentSuccess
+    expect(global.alert).toHaveBeenNthCalledWith(2, '¡Pago procesado exitosamente! Ahora tienes acceso Premium.')
+    expect(mockOnPaymentSuccess).toHaveBeenCalled()
+  }, 20000)
 
   it('debería mostrar errores de validación si se intenta pagar sin completar campos', async () => {
-    const user = userEvent.setup()
-    
     render(
       <PaymentMethod
         selectedPlan={mockSelectedPlan}
@@ -82,14 +91,16 @@ describe('PaymentMethod (pruebas esenciales)', () => {
 
     // Hacer clic en pagar con tarjeta para mostrar el formulario
     const cardButton = screen.getByText('💳 Pagar con Tarjeta de Crédito')
-    await user.click(cardButton)
+    await userEvent.click(cardButton)
 
     // Verificar que se muestra el formulario de tarjeta
     expect(screen.getByText('Datos de Tarjeta')).toBeInTheDocument()
 
     // Intentar enviar el formulario sin completar ningún campo
     const submitButton = screen.getByText('💳 Pagar $1499 ARS')
-    await user.click(submitButton)
+    await act(async () => {
+      await userEvent.click(submitButton)
+    })
 
     // Verificar que se muestran los errores de validación para todos los campos
     const errorMessages = screen.getAllByText('Este campo es obligatorio')
@@ -97,5 +108,5 @@ describe('PaymentMethod (pruebas esenciales)', () => {
     
     // Verificar que no se llama a onPaymentSuccess porque hay errores
     expect(mockOnPaymentSuccess).not.toHaveBeenCalled()
-  })
+  }, 20000)
 }) 
