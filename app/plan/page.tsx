@@ -6,12 +6,20 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Check, Crown, Star } from "lucide-react"
+import { Check, Crown, Star, ArrowLeft } from "lucide-react"
+import PaymentMethod from "@/app/pago/page"
 
 export default function PlanPage() {
   const { user, updateUserPlan } = useAuth()
   const router = useRouter()
+  const [showPlanOptions, setShowPlanOptions] = useState(false)
   const [showPayment, setShowPayment] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<{
+    duration: string
+    price: number
+    originalPrice?: number
+    savings?: number
+  } | null>(null)
 
   useEffect(() => {
     if (!user) {
@@ -20,49 +28,221 @@ export default function PlanPage() {
   }, [user, router])
 
   const handleUpgrade = () => {
+    setShowPlanOptions(true)
+  }
+
+  const handlePlanSelection = (plan: {
+    duration: string
+    price: number
+    originalPrice?: number
+    savings?: number
+  }) => {
+    setSelectedPlan(plan)
+    setShowPlanOptions(false)
     setShowPayment(true)
   }
 
-  const handlePayment = (method: "card" | "mercadopago") => {
-    // Simular proceso de pago
-    alert(`Procesando pago con ${method === "card" ? "Tarjeta de Crédito" : "MercadoPago"}...`)
+  const handlePaymentSuccess = () => {
+    updateUserPlan("pago")
+    setShowPayment(false)
+    setShowPlanOptions(false)
+    setSelectedPlan(null)
+  }
 
-    setTimeout(() => {
-      updateUserPlan("pago")
-      alert("¡Pago procesado exitosamente! Ahora tienes acceso Premium.")
-      setShowPayment(false)
-    }, 2000)
+  const handleBackToPlans = () => {
+    setShowPlanOptions(false)
+    setShowPayment(false)
+    setSelectedPlan(null)
   }
 
   if (!user) return null
 
   if (showPayment) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-md">
-        <Card>
-          <CardHeader>
-            <CardTitle>Procesar Pago</CardTitle>
-            <CardDescription>Selecciona tu método de pago preferido</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-4 bg-blue-50 rounded-lg">
-              <h3 className="font-semibold mb-2">Plan Premium</h3>
-              <p className="text-2xl font-bold">$999 ARS/mes</p>
+      <PaymentMethod
+        selectedPlan={selectedPlan}
+        onPaymentSuccess={handlePaymentSuccess}
+        onBack={handleBackToPlans}
+      />
+    )
+  }
+
+  if (showPlanOptions) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8 text-center">
+          <Button 
+            variant="ghost" 
+            onClick={() => setShowPlanOptions(false)}
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver a Planes
+          </Button>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Elige tu Plan Premium</h1>
+          <p className="text-gray-600">Selecciona la duración que mejor se adapte a tus necesidades</p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {/* Plan Mensual */}
+          <Card className="border-2 hover:border-yellow-300 transition-colors">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-yellow-500" />
+                Plan Mensual
+              </CardTitle>
+              <CardDescription>Perfecto para probar</CardDescription>
+              <div className="text-3xl font-bold">$1,499 ARS</div>
+              <div className="text-sm text-gray-500">por mes</div>
+            </CardHeader>
+            <CardContent className="flex flex-col h-full">
+              <ul className="space-y-2 mb-6 flex-grow">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Todo lo del plan gratuito
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Reproducción de sonidos
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Simulaciones interactivas
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Contenido exclusivo
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Soporte prioritario
+                </li>
+              </ul>
+              <Button 
+                onClick={() => handlePlanSelection({ duration: "1 mes", price: 1499 })}
+                className="w-full mt-auto"
+              >
+                Seleccionar Plan Mensual
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Plan Semestral */}
+          <Card className="border-2 border-yellow-300 relative">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+              <Badge className="bg-yellow-500 text-white">
+                Más Popular
+              </Badge>
             </div>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-yellow-500" />
+                Plan Semestral
+              </CardTitle>
+              <CardDescription>La opción más elegida</CardDescription>
+              <div className="text-3xl font-bold">$7,499 ARS</div>
+              <div className="text-sm text-gray-500">por 6 meses</div>
+              <div className="text-sm text-green-600 font-semibold">
+                Ahorras $1,495 ARS
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Todo lo del plan gratuito
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Reproducción de sonidos
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Simulaciones interactivas
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Contenido exclusivo
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Soporte prioritario
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Descuento especial
+                </li>
+              </ul>
+              <Button 
+                onClick={() => handlePlanSelection({ 
+                  duration: "6 meses", 
+                  price: 7499, 
+                  originalPrice: 8994, 
+                  savings: 1495 
+                })}
+                className="w-full"
+                size="lg"
+              >
+                Seleccionar Plan Semestral
+              </Button>
+            </CardContent>
+          </Card>
 
-            <Button onClick={() => handlePayment("card")} className="w-full" size="lg">
-              💳 Pagar con Tarjeta de Crédito
-            </Button>
-
-            <Button onClick={() => handlePayment("mercadopago")} variant="outline" className="w-full" size="lg">
-              🔵 Pagar con MercadoPago
-            </Button>
-
-            <Button onClick={() => setShowPayment(false)} variant="ghost" className="w-full">
-              Cancelar
-            </Button>
-          </CardContent>
-        </Card>
+          {/* Plan Anual */}
+          <Card className="border-2 hover:border-yellow-300 transition-colors">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-yellow-500" />
+                Plan Anual
+              </CardTitle>
+              <CardDescription>Máximo ahorro</CardDescription>
+              <div className="text-3xl font-bold">$12,999 ARS</div>
+              <div className="text-sm text-gray-500">por 12 meses</div>
+              <div className="text-sm text-green-600 font-semibold">
+                Ahorras $4,989 ARS
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Todo lo del plan gratuito
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Reproducción de sonidos
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Simulaciones interactivas
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Contenido exclusivo
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Soporte prioritario
+                </li>
+                <li className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Máximo descuento
+                </li>
+              </ul>
+              <Button 
+                onClick={() => handlePlanSelection({ 
+                  duration: "12 meses", 
+                  price: 12999, 
+                  originalPrice: 17988, 
+                  savings: 4989 
+                })}
+                className="w-full"
+              >
+                Seleccionar Plan Anual
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     )
   }
@@ -143,7 +323,7 @@ export default function PlanPage() {
               <CardTitle>Plan Premium</CardTitle>
             </div>
             <CardDescription>Experiencia completa</CardDescription>
-            <div className="text-2xl font-bold">$999 ARS/mes</div>
+            <div className="text-2xl font-bold">Desde $1,499 ARS/mes</div>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
