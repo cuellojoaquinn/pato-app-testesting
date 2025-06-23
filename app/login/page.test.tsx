@@ -31,7 +31,7 @@ describe("LoginPage", () => {
   // Limpia el historial de mocks antes de cada test para evitar interferencias
   beforeEach(() => {
     jest.clearAllMocks()
-    mockGet.mockImplementation((key: string) => null) // Valor por defecto para los parámetros de búsqueda
+    mockGet.mockImplementation(() => null) // Valor por defecto para los parámetros de búsqueda
   })
 
   // Caso de prueba: Verificar el comportamiento de inicio de sesión exitoso
@@ -96,7 +96,7 @@ describe("LoginPage", () => {
   // Caso de prueba: muestra mensaje de éxito si el parámetro registered es true
   it("shows success message if registered param is true", () => {
     // Simula que el parámetro registered es "true"
-    mockGet.mockImplementation((key: string) => (key === "registered" ? "true" : null))
+    mockGet.mockImplementation(() => "true")
     render(<LoginPage />)
     // Verifica que se muestre el mensaje de registro exitoso
     expect(screen.getByText("¡Registro exitoso! Ahora puedes iniciar sesión.")).toBeInTheDocument()
