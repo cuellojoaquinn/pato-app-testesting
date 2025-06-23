@@ -1,9 +1,7 @@
 "use client"
 
-
-
 import type React from "react"
-
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { useRouter } from "next/navigation"
@@ -315,9 +313,11 @@ export default function AdminPage() {
             <CardContent>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <img
+                  <Image
                     src={pato.imagen || "/placeholder.svg"}
                     alt={pato.nombre}
+                    width={400}
+                    height={192}
                     className="w-full h-48 object-cover rounded-lg"
                   />
                 </div>
