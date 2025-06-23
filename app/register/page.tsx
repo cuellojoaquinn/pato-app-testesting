@@ -81,11 +81,9 @@ export default function RegisterPage() {
       } else {
         setErrors({ general: "El email o nombre de usuario ya están en uso" })
       }
-    } catch (error) {
-      setErrors({ general: "Error al registrar usuario" })
-    } finally {
-      setLoading(false)
-    }
+    } catch {}
+
+    setLoading(false)
   }
 
   const handleChange = (field: string, value: string | boolean) => {

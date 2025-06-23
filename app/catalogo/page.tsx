@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { PatoService } from "@/lib/patoService"
 import type { Pato } from "@/types"
@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Volume2, Eye } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 export default function CatalogoPage() {
   const { user } = useAuth()
@@ -23,23 +24,22 @@ export default function CatalogoPage() {
     alimentacion: "",
   })
 
+  const loadPatos = useCallback(() => {
+    const filteredPatos = PatoService.searchPatos(searchQuery, filters)
+    setPatos(filteredPatos)
+  }, [searchQuery, filters])
+
   useEffect(() => {
     if (!user) {
       router.push("/login")
       return
     }
-
     loadPatos()
-  }, [user, router])
-
-  const loadPatos = () => {
-    const filteredPatos = PatoService.searchPatos(searchQuery, filters)
-    setPatos(filteredPatos)
-  }
+  }, [user, router, loadPatos])
 
   useEffect(() => {
     loadPatos()
-  }, [searchQuery, filters])
+  }, [loadPatos])
 
   const playSound = (soundUrl: string, patoName: string) => {
     if (user?.plan === "gratuito") {
@@ -52,7 +52,6 @@ export default function CatalogoPage() {
   }
 
   const especies = [...new Set(PatoService.getPatos().map((p) => p.especie))]
-  const habitats = [...new Set(PatoService.getPatos().map((p) => p.habitat))]
 
   if (!user) return null
 
@@ -112,7 +111,7 @@ export default function CatalogoPage() {
         {patos.map((pato) => (
           <Card key={pato.id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="aspect-video relative">
-              <img src={pato.imagen || "/placeholder.svg"} alt={pato.nombre} className="w-full h-full object-cover" />
+              <Image src={pato.imagen || "/placeholder.svg"} alt={pato.nombre} width={400} height={225} className="w-full h-full object-cover" />
             </div>
             <CardHeader>
               <CardTitle className="text-lg">{pato.nombre}</CardTitle>

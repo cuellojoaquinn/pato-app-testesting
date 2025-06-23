@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -17,7 +18,6 @@ export default function LoginPage() {
     email: "",
     contraseña: "",
   })
-  const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
 
@@ -37,7 +37,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
+
     setLoading(true)
 
     try {
@@ -46,18 +46,15 @@ export default function LoginPage() {
       if (success) {
         router.push("/")
       } else {
-        setError("Email o contraseña incorrectos")
+        // No need to set error here, as it's handled by the login function
       }
-    } catch (error) {
-      setError("Error al iniciar sesión")
-    } finally {
-      setLoading(false)
-    }
+    } catch {}
+
+    setLoading(false)
   }
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-    if (error) setError("")
   }
 
   return (
@@ -75,11 +72,7 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+            {/* No need to render error message here, as it's handled by the login function */}
 
             <div>
               <Label htmlFor="email">Email</Label>

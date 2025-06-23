@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Volume2, MapPin, Utensils, Feather, Activity } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function PatoDetailPage() {
   const { user } = useAuth()
@@ -63,7 +64,7 @@ export default function PatoDetailPage() {
         {/* Imagen */}
         <div className="space-y-4">
           <div className="aspect-square rounded-lg overflow-hidden">
-            <img src={pato.imagen || "/placeholder.svg"} alt={pato.nombre} className="w-full h-full object-cover" />
+            <Image src={pato.imagen || "/placeholder.svg"} alt={pato.nombre} width={400} height={400} className="w-full h-full object-cover" />
           </div>
 
           <Card>
