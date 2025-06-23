@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Check, Crown, Star, ArrowLeft } from "lucide-react"
-import PaymentMethod from "@/app/pago/page"
+import PaymentMethod from "@/components/PaymentMethod"
 
 export default function PlanPage() {
   const { user, updateUserPlan } = useAuth()
