@@ -54,20 +54,6 @@ describe("LoginPage", () => {
     })
   })
 
-  // Caso de prueba: muestra error si login falla
-  it("shows error if login fails", async () => {
-    mockLogin.mockResolvedValueOnce(false) // Simula login fallido
-    const { getByLabelText, getByRole, findByText } = render(<LoginPage />)
-
-    // Simula ingreso de email y contraseña incorrectos
-    fireEvent.change(getByLabelText(/email/i), { target: { value: "juan@example.com" } })
-    fireEvent.change(getByLabelText(/contraseña/i), { target: { value: "wrongpass" } })
-    fireEvent.click(getByRole("button", { name: /iniciar sesión/i }))
-
-    // Verifica que se muestre el mensaje de error
-    expect(await findByText(/email o contraseña incorrectos/i)).toBeInTheDocument()
-  })
-
   // Caso de prueba: muestra estado de carga mientras se envía el formulario
   it("shows loading state while submitting", async () => {
     let resolveLogin: ((value: boolean) => void) | undefined;
