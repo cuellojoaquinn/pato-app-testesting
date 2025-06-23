@@ -101,7 +101,7 @@ export default function RegisterPage() {
           <CardDescription>Únete a Pato App para explorar el mundo de los patos argentinos</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form data-testid="register-form" onSubmit={handleSubmit} className="space-y-4">
             {errors.general && (
               <Alert variant="destructive">
                 <AlertDescription>{errors.general}</AlertDescription>

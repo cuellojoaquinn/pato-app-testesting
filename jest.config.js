@@ -31,6 +31,7 @@ const customJestConfig = {
   },
   fakeTimers: {
     enableGlobally: true,
+    legacyFakeTimers: false,
   },
   testTimeout: 10000,
 }
