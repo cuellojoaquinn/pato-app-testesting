@@ -2,26 +2,33 @@
 
 Este directorio contiene los workflows de GitHub Actions para automatizar el CI/CD del proyecto.
 
-## Workflows Disponibles
+## Workflow Disponible
 
-### 1. `nextjs.yml` - CI/CD Básico
-- **Trigger**: Push y Pull Requests en `main` y `develop`
-- **Funciones**:
-  - Instalación de dependencias
-  - Linting con ESLint
-  - Build de la aplicación
-  - Subida de artifacts
+### 1. `ci.yml` - CI/CD Completo para Next.js
+- **Trigger**: Push y Pull Requests en cualquier rama (`'**'`)
+- **Pasos ejecutados:**
+  - Checkout del repositorio
+  - Setup de Node.js 20
+  - Instalación de dependencias (`npm install --legacy-peer-deps`)
+  - Linting con ESLint (`npm run lint`)
+  - Pruebas unitarias (`npm test`)
+  - Pruebas unitarias con cobertura (`npm run test:coverage`)
+  - Build de la aplicación (`npm run build`)
 
 ## Uso
 
-Los workflows se ejecutarán automáticamente cuando:
-- Hagas push a las ramas `main` o `develop`
-- Crees un Pull Request hacia `main` o `develop`
+El workflow se ejecutará automáticamente cuando:
+- Hagas push a cualquier rama
+- Crees un Pull Request hacia cualquier rama
 
 ## Personalización
 
-Puedes modificar los workflows según tus necesidades:
-- Cambiar las ramas que activan los workflows
-- Agregar más pasos de testing
-- Configurar deploy a otros servicios
-- Agregar notificaciones (Slack, Discord, etc.) 
+Puedes modificar el workflow según tus necesidades:
+- Cambiar las versiones de Node.js
+- Agregar más pasos de testing o deploy
+- Configurar deploy a servicios externos
+- Agregar notificaciones (Slack, Discord, etc.)
+
+## Notas
+- Asegúrate de tener definidos los scripts `test` y `test:coverage` en tu `package.json` para que los pasos de pruebas funcionen correctamente.
+- Si necesitas ayuda para configurar Jest o React Testing Library, házmelo saber.
