@@ -29,6 +29,7 @@ Agrega los siguientes scripts a tu `package.json`:
 ### 2. Archivos de Configuración
 
 Los archivos de configuración ya están creados:
+
 - `jest.config.js` - Configuración principal de Jest
 - `jest.setup.js` - Configuración de setup para Jest
 
@@ -47,12 +48,14 @@ __tests__/
 ## Casos de Prueba Cubiertos
 
 ### 1. Renderizado Inicial
+
 - ✅ Renderiza la información del pato correctamente
 - ✅ Muestra todos los campos de información
 - ✅ Muestra la imagen del pato
 - ✅ Muestra el botón de volver al catálogo
 
 ### 2. Funcionalidad de Sonido
+
 - ✅ Botón deshabilitado para usuarios gratuitos
 - ✅ Botón habilitado para usuarios premium
 - ✅ Mensaje de actualización para usuarios gratuitos
@@ -60,39 +63,47 @@ __tests__/
 - ✅ Reproducción de sonido para usuarios premium
 
 ### 3. Navegación
+
 - ✅ Redirección a login si no hay usuario autenticado
 - ✅ Redirección al catálogo si el pato no existe
 - ✅ Navegación al catálogo desde el botón "Volver"
 
 ### 4. Manejo de Errores
+
 - ✅ Manejo de patos sin imagen
 - ✅ Renderizado null cuando no hay usuario o pato
 
 ### 5. Interacciones del Usuario
+
 - ✅ Clic en botón de sonido para usuarios premium
 - ✅ Visualización de información completa del pato
 
 ### 6. Accesibilidad
+
 - ✅ Texto alternativo en imágenes
 - ✅ Botones con texto descriptivo
 
 ### 7. Estados del Componente
+
 - ✅ Estado de carga inicial
 - ✅ Manejo de cambios en el plan del usuario
 
 ## Ejecutar las Pruebas
 
 ### Ejecutar todas las pruebas
+
 ```bash
 npm test
 ```
 
 ### Ejecutar pruebas en modo watch
+
 ```bash
 npm run test:watch
 ```
 
 ### Ejecutar pruebas con cobertura
+
 ```bash
 npm run test:coverage
 ```
@@ -100,6 +111,7 @@ npm run test:coverage
 ## Cobertura de Código
 
 Las pruebas están configuradas para alcanzar al menos un 80% de cobertura en:
+
 - Branches (ramas)
 - Functions (funciones)
 - Lines (líneas)
@@ -108,39 +120,44 @@ Las pruebas están configuradas para alcanzar al menos un 80% de cobertura en:
 ## Mocks Utilizados
 
 ### 1. Next.js Navigation
+
 ```javascript
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useParams: jest.fn(),
-}))
+}));
 ```
 
 ### 2. Contexto de Autenticación
+
 ```javascript
 jest.mock('../../../../contexts/AuthContext', () => ({
   useAuth: jest.fn(),
-}))
+}));
 ```
 
 ### 3. Servicio de Patos
+
 ```javascript
 jest.mock('../../../../lib/patoService', () => ({
   PatoService: {
     getPatos: jest.fn(),
   },
-}))
+}));
 ```
 
 ### 4. Next.js Link
+
 ```javascript
 jest.mock('next/link', () => {
   return ({ children, href }) => {
-    return <a href={href}>{children}</a>
-  }
-})
+    return <a href={href}>{children}</a>;
+  };
+});
 ```
 
 ### 5. Global Objects
+
 - `window.alert`
 - `localStorage`
 - `window.matchMedia`
@@ -150,6 +167,7 @@ jest.mock('next/link', () => {
 ## Datos de Prueba
 
 ### Usuario Mock
+
 ```javascript
 const mockUser = {
   id: '1',
@@ -161,10 +179,11 @@ const mockUser = {
   rol: 'user',
   plan: 'gratuito',
   fechaRegistro: '2024-01-01',
-}
+};
 ```
 
 ### Pato Mock
+
 ```javascript
 const mockPato = {
   id: 'pato-1',
@@ -178,26 +197,31 @@ const mockPato = {
   imagen: '/pato-real.jpg',
   sonido: 'cuac-cuac.mp3',
   especie: 'Anas',
-}
+};
 ```
 
 ## Troubleshooting
 
 ### Error: "Cannot find module '@testing-library/react'"
+
 Asegúrate de haber instalado todas las dependencias:
+
 ```bash
 npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event jest jest-environment-jsdom @types/jest
 ```
 
 ### Error: "Jest did not exit"
+
 Esto puede ocurrir si hay timers o promesas pendientes. Asegúrate de limpiar todos los mocks en `beforeEach`:
+
 ```javascript
 beforeEach(() => {
-  jest.clearAllMocks()
-})
+  jest.clearAllMocks();
+});
 ```
 
 ### Error: "TypeError: Cannot read property 'getBoundingClientRect' of null"
+
 Este error puede ocurrir con componentes que usan `ResizeObserver`. El mock ya está configurado en `jest.setup.js`.
 
 ## Próximos Pasos
@@ -212,4 +236,4 @@ Este error puede ocurrir con componentes que usan `ResizeObserver`. El mock ya e
 - Las pruebas están escritas en español para mantener consistencia con el proyecto
 - Se utilizan mocks extensivos para aislar el componente bajo prueba
 - Se incluyen pruebas de accesibilidad básicas
-- Se cubren tanto casos exitosos como casos de error 
+- Se cubren tanto casos exitosos como casos de error

@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
@@ -10,7 +10,7 @@ jest.mock('next/navigation', () => ({
     forward: jest.fn(),
     refresh: jest.fn(),
   }),
-}))
+}));
 
 // Mock localStorage
 const localStorageMock = {
@@ -18,11 +18,11 @@ const localStorageMock = {
   setItem: jest.fn(),
   removeItem: jest.fn(),
   clear: jest.fn(),
-}
-global.localStorage = localStorageMock
+};
+global.localStorage = localStorageMock;
 
 // Mock window.confirm
-global.confirm = jest.fn()
+global.confirm = jest.fn();
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -37,7 +37,7 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
   })),
-})
+});
 
 // Mock ResizeObserver para Radix UI
 class ResizeObserver {
@@ -45,4 +45,4 @@ class ResizeObserver {
   unobserve() {}
   disconnect() {}
 }
-global.ResizeObserver = ResizeObserver; 
+global.ResizeObserver = ResizeObserver;
