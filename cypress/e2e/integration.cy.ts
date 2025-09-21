@@ -32,30 +32,38 @@ describe('Pruebas de integración', () => {
     cy.get('.min-h-screen').click();
   });
 
-  it('Cuenta premium', function() {
+  it.only('Cuenta premium', function() {
     cy.visit('https://pato-app-testesting-xi.vercel.app/')
     cy.get('.border').click();
-
+    
     // Login de cuenta
     cy.get('#email').type('maria@example.com{enter}');
     cy.get('#contraseña').type('123456');
     cy.get('.inline-flex').click();
-
-    // Seleccion de plan
-    cy.get('.border.w-full').click();
+    
+    // Seleccion actualizar Plan
     cy.get('.text-sm.w-full').last().click();
-    cy.wait(1000);
-
-    cy.get('.text-sm.w-full').first().click();
+    cy.wait(1000)
+    
+    // Seleccionar Plan Premium
+    cy.get('.text-sm.w-full').click();
+    cy.wait(1000)
+    
+    // Selecciona plan semestral
     cy.get('.relative .text-sm.rounded-md.w-full').click();
+    
+    // Selecciona pago con tarjeta credito
     cy.get('.inline-flex.bg-primary').click();
+    
+    // Completar campos tarjeta
     cy.get('#cardNumber').type('1234 5678 1234 5678');
     cy.get('#cardName').type('Maria Perez');
     cy.get('#expiry').type('20/12');
     cy.get('#cvv').type('132');
     cy.get('.space-y-4 > .shadow-xs.w-full').click();
-    cy.get('.space-y-4 > .shadow-xs.w-full').click();
+    cy.wait(1000);
     
+    // Corroborar plan premium
     cy.get('[href="/plan"]')
       .should('have.text', 'Mi Plan (pago)');
     cy.get('.text-xl.font-bold').click();
