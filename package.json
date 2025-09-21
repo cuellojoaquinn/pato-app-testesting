@@ -10,7 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:e2e:run": "cypress run",
+    "test:e2e:run": "cypress run --browser chrome",
     "test:e2e:open": "cypress open"
   },
   "dependencies": {
