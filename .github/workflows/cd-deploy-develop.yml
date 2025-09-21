@@ -22,5 +22,8 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Dar permisos al script
+        run: chmod +x ./scripts/deploy-staging.sh
+
       - name: Deploy to Staging
         run: ./scripts/deploy-staging.sh
