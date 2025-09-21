@@ -22,5 +22,8 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Dar permisos al script
+        run: chmod +x ./scripts/deploy-prod.sh
+
       - name: Deploy to Production
         run: ./scripts/deploy-prod.sh
