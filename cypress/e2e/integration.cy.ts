@@ -35,12 +35,18 @@ describe('Pruebas de integración', () => {
   it('Cuenta premium', function() {
     cy.visit('https://pato-app-testesting-xi.vercel.app/')
     cy.get('.border').click();
+
+    // Login de cuenta
     cy.get('#email').type('maria@example.com{enter}');
     cy.get('#contraseña').type('123456');
     cy.get('.inline-flex').click();
+
+    // Seleccion de plan
     cy.get('.border.w-full').click();
     cy.get('.text-sm.w-full').last().click();
-    cy.get('.inline-flex.bg-primary').click();
+    //cy.get('.inline-flex.bg-primary').click();
+    cy.wait(1000);
+
     cy.get('.text-sm.w-full').click();
     cy.get('.relative .text-sm.rounded-md.w-full').click();
     cy.get('.inline-flex.bg-primary').click();
