@@ -2,7 +2,7 @@ name: CI - PR to main (Hotfix)
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   hotfix-ci:
@@ -21,6 +21,9 @@ jobs:
 
       - name: Run linter
         run: npm run lint
+
+      - name: Run prettier
+        run: npm run format:check
 
       - name: Run unit tests
         run: npm test

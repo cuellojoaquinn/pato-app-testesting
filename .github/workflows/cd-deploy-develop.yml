@@ -2,7 +2,7 @@ name: CD - Deploy on develop (Staging)
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
 
 jobs:
   deploy-staging:

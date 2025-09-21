@@ -2,7 +2,7 @@ name: CI - PR to develop
 
 on:
   pull_request:
-    branches: [ develop ]
+    branches: [develop]
 
 jobs:
   build-and-test:
@@ -21,6 +21,9 @@ jobs:
 
       - name: Run linter
         run: npm run lint
+
+      - name: Run prettier
+        run: npm run format:check
 
       - name: Run unit tests
         run: npm run test

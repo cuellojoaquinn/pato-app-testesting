@@ -1,61 +1,66 @@
+'use client';
 
-"use client"
+import type React from 'react';
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useAuth } from "@/contexts/AuthContext"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import Link from "next/link"
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
-    email: "",
-    contraseña: "",
-  })
-  const [loading, setLoading] = useState(false)
-  const [successMessage, setSuccessMessage] = useState("")
+    email: '',
+    contraseña: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const { login, user } = useAuth()
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const { login, user } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (user) {
-      router.push("/")
+      router.push('/');
     }
 
-    if (searchParams.get("registered") === "true") {
-      setSuccessMessage("¡Registro exitoso! Ahora puedes iniciar sesión.")
+    if (searchParams.get('registered') === 'true') {
+      setSuccessMessage('¡Registro exitoso! Ahora puedes iniciar sesión.');
     }
-  }, [user, router, searchParams])
+  }, [user, router, searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const success = await login(formData.email, formData.contraseña)
+      const success = await login(formData.email, formData.contraseña);
 
       if (success) {
-        router.push("/")
+        router.push('/');
       } else {
         // No need to set error here, as it's handled by the login function
       }
     } catch {}
 
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-md">
@@ -80,7 +85,7 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => handleChange("email", e.target.value)}
+                onChange={e => handleChange('email', e.target.value)}
                 required
               />
             </div>
@@ -91,19 +96,19 @@ export default function LoginPage() {
                 id="contraseña"
                 type="password"
                 value={formData.contraseña}
-                onChange={(e) => handleChange("contraseña", e.target.value)}
+                onChange={e => handleChange('contraseña', e.target.value)}
                 required
               />
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
+              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </Button>
           </form>
 
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
-              ¿No tienes cuenta?{" "}
+              ¿No tienes cuenta?{' '}
               <Link href="/register" className="text-blue-600 hover:underline">
                 Regístrate
               </Link>
@@ -124,5 +129,5 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

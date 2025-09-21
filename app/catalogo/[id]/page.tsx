@@ -1,53 +1,62 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { useAuth } from "@/contexts/AuthContext"
-import { PatoService } from "@/lib/patoService"
-import type { Pato } from "@/types"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Volume2, MapPin, Utensils, Feather, Activity } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { PatoService } from '@/lib/patoService';
+import type { Pato } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  ArrowLeft,
+  Volume2,
+  MapPin,
+  Utensils,
+  Feather,
+  Activity,
+} from 'lucide-react';
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function PatoDetailPage() {
-  const { user } = useAuth()
-  const router = useRouter()
-  const params = useParams()
-  const [pato, setPato] = useState<Pato | null>(null)
+  const { user } = useAuth();
+  const router = useRouter();
+  const params = useParams();
+  const [pato, setPato] = useState<Pato | null>(null);
 
   useEffect(() => {
     if (!user) {
-      router.push("/login")
-      return
+      router.push('/login');
+      return;
     }
 
-    const patoId = params.id as string
-    const patos = PatoService.getPatos()
-    const foundPato = patos.find((p) => p.id === patoId)
+    const patoId = params.id as string;
+    const patos = PatoService.getPatos();
+    const foundPato = patos.find(p => p.id === patoId);
 
     if (foundPato) {
-      setPato(foundPato)
+      setPato(foundPato);
     } else {
-      router.push("/catalogo")
+      router.push('/catalogo');
     }
-  }, [user, params.id, router])
+  }, [user, params.id, router]);
 
   const playSound = () => {
-    if (!pato) return
+    if (!pato) return;
 
-    if (user?.plan === "gratuito") {
-      alert("Esta funcionalidad está disponible solo para usuarios Premium. ¡Actualiza tu plan!")
-      return
+    if (user?.plan === 'gratuito') {
+      alert(
+        'Esta funcionalidad está disponible solo para usuarios Premium. ¡Actualiza tu plan!'
+      );
+      return;
     }
 
     // Simular reproducción de sonido
-    alert(`🎵 Reproduciendo sonido de ${pato.nombre}`)
-  }
+    alert(`🎵 Reproduciendo sonido de ${pato.nombre}`);
+  };
 
-  if (!user || !pato) return null
+  if (!user || !pato) return null;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -64,7 +73,13 @@ export default function PatoDetailPage() {
         {/* Imagen */}
         <div className="space-y-4">
           <div className="aspect-square rounded-lg overflow-hidden">
-            <Image src={pato.imagen || "/placeholder.svg"} alt={pato.nombre} width={400} height={400} className="w-full h-full object-cover" />
+            <Image
+              src={pato.imagen || '/placeholder.svg'}
+              alt={pato.nombre}
+              width={400}
+              height={400}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           <Card>
@@ -75,11 +90,19 @@ export default function PatoDetailPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Button onClick={playSound} className="w-full" disabled={user.plan === "gratuito"}>
-                {user.plan === "gratuito" ? "🔒 Premium Requerido" : "🎵 Reproducir Sonido"}
+              <Button
+                onClick={playSound}
+                className="w-full"
+                disabled={user.plan === 'gratuito'}
+              >
+                {user.plan === 'gratuito'
+                  ? '🔒 Premium Requerido'
+                  : '🎵 Reproducir Sonido'}
               </Button>
-              {user.plan === "gratuito" && (
-                <p className="text-sm text-amber-600 mt-2 text-center">Actualiza a Premium para escuchar los sonidos</p>
+              {user.plan === 'gratuito' && (
+                <p className="text-sm text-amber-600 mt-2 text-center">
+                  Actualiza a Premium para escuchar los sonidos
+                </p>
               )}
             </CardContent>
           </Card>
@@ -88,8 +111,12 @@ export default function PatoDetailPage() {
         {/* Información */}
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{pato.nombre}</h1>
-            <p className="text-xl text-gray-600 italic mb-4">{pato.nombreCientifico}</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {pato.nombre}
+            </h1>
+            <p className="text-xl text-gray-600 italic mb-4">
+              {pato.nombreCientifico}
+            </p>
             <Badge variant="secondary" className="mb-4">
               Especie: {pato.especie}
             </Badge>
@@ -148,5 +175,5 @@ export default function PatoDetailPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
