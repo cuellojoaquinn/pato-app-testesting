@@ -46,6 +46,7 @@ describe('Pruebas de integración', () => {
     cy.get('.text-sm.w-full').last().click();
     cy.wait(1000);
 
+    // Seleccion de plan mensual
     cy.get('.text-sm.w-full').first().click();
     cy.get('.relative .text-sm.rounded-md.w-full').click();
     cy.get('.inline-flex.bg-primary').click();
