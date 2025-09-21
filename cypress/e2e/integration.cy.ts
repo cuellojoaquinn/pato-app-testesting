@@ -44,7 +44,6 @@ describe('Pruebas de integración', () => {
     // Seleccion de plan
     cy.get('.border.w-full').click();
     cy.get('.text-sm.w-full').last().click();
-    //cy.get('.inline-flex.bg-primary').click();
     cy.wait(1000);
 
     cy.get('.text-sm.w-full').click();
