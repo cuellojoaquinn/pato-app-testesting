@@ -25,6 +25,17 @@ jobs:
       - name: Dar permisos al script
         run: chmod +x ./scripts/deploy-staging.sh
 
+      - name: Debug VERCEL_TOKEN
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "❌ VERCEL_TOKEN no está definido"
+            exit 1
+          else
+            echo "✅ VERCEL_TOKEN está presente"
+          fi
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
       - name: Deploy to Staging
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
