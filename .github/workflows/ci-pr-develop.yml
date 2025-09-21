@@ -23,10 +23,13 @@ jobs:
         run: npm run lint
 
       - name: Run unit tests
-        run: npm test -- --coverage
+        run: npm run test
+
+      - name: Run unit tests
+        run: npm run test:coverage
 
       - name: Run integration tests
-        run: npm run test:integration
+        run: npm run test:e2e:run
 
       - name: Build project
         run: npm run build
