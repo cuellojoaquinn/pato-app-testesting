@@ -1,39 +1,39 @@
-import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { useRouter, useParams } from 'next/navigation'
-import PatoDetailPage from '../../../app/catalogo/[id]/page'
-import { useAuth } from '../../../contexts/AuthContext'
-import { PatoService } from '../../../lib/patoService'
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { useRouter, useParams } from 'next/navigation';
+import PatoDetailPage from '../../../app/catalogo/[id]/page';
+import { useAuth } from '../../../contexts/AuthContext';
+import { PatoService } from '../../../lib/patoService';
 
 // Mock de Next.js navigation
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useParams: jest.fn(),
-}))
+}));
 
 // Mock del contexto de autenticación
 jest.mock('../../../contexts/AuthContext', () => ({
   useAuth: jest.fn(),
-}))
+}));
 
 // Mock del servicio de patos
 jest.mock('../../../lib/patoService', () => ({
   PatoService: {
     getPatos: jest.fn(),
   },
-}))
+}));
 
 // Mock de Next.js Link
 jest.mock('next/link', () => {
   return ({ children, href }: { children: React.ReactNode; href: string }) => {
-    return <a href={href}>{children}</a>
-  }
-})
+    return <a href={href}>{children}</a>;
+  };
+});
 
 // Mock de window.alert
-const mockAlert = jest.fn()
-global.alert = mockAlert
+const mockAlert = jest.fn();
+global.alert = mockAlert;
 
 // Mock de localStorage
 const localStorageMock = {
@@ -43,13 +43,13 @@ const localStorageMock = {
   clear: jest.fn(),
   length: 0,
   key: jest.fn(),
-}
-global.localStorage = localStorageMock
+};
+global.localStorage = localStorageMock;
 
 describe('PatoDetailPage', () => {
   const mockRouter = {
     push: jest.fn(),
-  }
+  };
 
   const mockUser = {
     id: '1',
@@ -61,7 +61,7 @@ describe('PatoDetailPage', () => {
     rol: 'user' as const,
     plan: 'gratuito' as const,
     fechaRegistro: '2024-01-01',
-  }
+  };
 
   const mockPato = {
     id: 'pato-1',
@@ -75,179 +75,183 @@ describe('PatoDetailPage', () => {
     imagen: '/pato-real.jpg',
     sonido: 'cuac-cuac.mp3',
     especie: 'Anas',
-  }
+  };
 
   const mockPremiumUser = {
     ...mockUser,
     plan: 'pago' as const,
-  }
+  };
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
-    ;(useParams as jest.Mock).mockReturnValue({ id: 'pato-1' })
-    ;(useAuth as jest.Mock).mockReturnValue({ user: mockUser })
-    ;(PatoService.getPatos as jest.Mock).mockReturnValue([mockPato])
-  })
+    jest.clearAllMocks();
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useParams as jest.Mock).mockReturnValue({ id: 'pato-1' });
+    (useAuth as jest.Mock).mockReturnValue({ user: mockUser });
+    (PatoService.getPatos as jest.Mock).mockReturnValue([mockPato]);
+  });
 
   describe('Renderizado inicial', () => {
     it('debería renderizar la información del pato correctamente', () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
-      expect(screen.getByText('Pato Real')).toBeInTheDocument()
-      expect(screen.getByText('Anas platyrhynchos')).toBeInTheDocument()
-      expect(screen.getByText('Especie: Anas')).toBeInTheDocument()
-      expect(screen.getByText(/El pato real es una especie muy común/)).toBeInTheDocument()
-    })
+      expect(screen.getByText('Pato Real')).toBeInTheDocument();
+      expect(screen.getByText('Anas platyrhynchos')).toBeInTheDocument();
+      expect(screen.getByText('Especie: Anas')).toBeInTheDocument();
+      expect(
+        screen.getByText(/El pato real es una especie muy común/)
+      ).toBeInTheDocument();
+    });
 
     it('debería mostrar todos los campos de información del pato', () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
-      expect(screen.getByText('Comportamiento')).toBeInTheDocument()
-      expect(screen.getByText('Hábitat')).toBeInTheDocument()
-      expect(screen.getByText('Plumaje')).toBeInTheDocument()
-      expect(screen.getByText('Alimentación')).toBeInTheDocument()
-    })
+      expect(screen.getByText('Comportamiento')).toBeInTheDocument();
+      expect(screen.getByText('Hábitat')).toBeInTheDocument();
+      expect(screen.getByText('Plumaje')).toBeInTheDocument();
+      expect(screen.getByText('Alimentación')).toBeInTheDocument();
+    });
 
     it('debería mostrar la imagen del pato', () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
-      const imagen = screen.getByAltText('Pato Real')
-      expect(imagen).toBeInTheDocument()
-    })
+      const imagen = screen.getByAltText('Pato Real');
+      expect(imagen).toBeInTheDocument();
+    });
 
     it('debería mostrar el botón de volver al catálogo', () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
-      expect(screen.getByText('Volver al Catálogo')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText('Volver al Catálogo')).toBeInTheDocument();
+    });
+  });
 
   describe('Funcionalidad de sonido', () => {
     it('debería mostrar botón de sonido deshabilitado para usuarios gratuitos', () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
-      const botonSonido = screen.getByText('🔒 Premium Requerido')
-      expect(botonSonido).toBeInTheDocument()
-      expect(botonSonido.closest('button')).toBeDisabled()
-    })
+      const botonSonido = screen.getByText('🔒 Premium Requerido');
+      expect(botonSonido).toBeInTheDocument();
+      expect(botonSonido.closest('button')).toBeDisabled();
+    });
 
     it('debería mostrar botón de sonido habilitado para usuarios premium', () => {
-      ;(useAuth as jest.Mock).mockReturnValue({ user: mockPremiumUser })
-      
-      render(<PatoDetailPage />)
+      (useAuth as jest.Mock).mockReturnValue({ user: mockPremiumUser });
 
-      const botonSonido = screen.getByText('🎵 Reproducir Sonido')
-      expect(botonSonido).toBeInTheDocument()
-      expect(botonSonido.closest('button')).not.toBeDisabled()
-    })
+      render(<PatoDetailPage />);
+
+      const botonSonido = screen.getByText('🎵 Reproducir Sonido');
+      expect(botonSonido).toBeInTheDocument();
+      expect(botonSonido.closest('button')).not.toBeDisabled();
+    });
 
     it('debería mostrar mensaje de actualización para usuarios gratuitos', () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
-      expect(screen.getByText('Actualiza a Premium para escuchar los sonidos')).toBeInTheDocument()
-    })
+      expect(
+        screen.getByText('Actualiza a Premium para escuchar los sonidos')
+      ).toBeInTheDocument();
+    });
 
     it('debería mostrar alerta cuando usuario gratuito intenta reproducir sonido', async () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
-      const botonSonido = screen.getByText('🔒 Premium Requerido')
+      const botonSonido = screen.getByText('🔒 Premium Requerido');
       // El botón está deshabilitado, por lo que no se ejecuta onClick
       // Verificamos que el botón esté deshabilitado y muestre el texto correcto
-      expect(botonSonido.closest('button')).toBeDisabled()
-      expect(botonSonido).toHaveTextContent('🔒 Premium Requerido')
-    })
-  })
+      expect(botonSonido.closest('button')).toBeDisabled();
+      expect(botonSonido).toHaveTextContent('🔒 Premium Requerido');
+    });
+  });
 
   describe('Navegación', () => {
     it('debería redirigir a login si no hay usuario autenticado', () => {
-      ;(useAuth as jest.Mock).mockReturnValue({ user: null })
-      
-      render(<PatoDetailPage />)
+      (useAuth as jest.Mock).mockReturnValue({ user: null });
 
-      expect(mockRouter.push).toHaveBeenCalledWith('/login')
-    })
+      render(<PatoDetailPage />);
+
+      expect(mockRouter.push).toHaveBeenCalledWith('/login');
+    });
 
     it('debería redirigir al catálogo si el pato no existe', () => {
-      ;(PatoService.getPatos as jest.Mock).mockReturnValue([])
-      
-      render(<PatoDetailPage />)
+      (PatoService.getPatos as jest.Mock).mockReturnValue([]);
 
-      expect(mockRouter.push).toHaveBeenCalledWith('/catalogo')
-    })
-  })
+      render(<PatoDetailPage />);
+
+      expect(mockRouter.push).toHaveBeenCalledWith('/catalogo');
+    });
+  });
 
   describe('Manejo de errores', () => {
     it('debería manejar pato sin imagen', () => {
-      const patoSinImagen = { ...mockPato, imagen: '' }
-      ;(PatoService.getPatos as jest.Mock).mockReturnValue([patoSinImagen])
-      
-      render(<PatoDetailPage />)
+      const patoSinImagen = { ...mockPato, imagen: '' };
+      (PatoService.getPatos as jest.Mock).mockReturnValue([patoSinImagen]);
 
-      const imagen = screen.getByAltText('Pato Real')
-      expect(imagen).toHaveAttribute('src', '/placeholder.svg')
-    })
+      render(<PatoDetailPage />);
+
+      const imagen = screen.getByAltText('Pato Real');
+      expect(imagen).toHaveAttribute('src', '/placeholder.svg');
+    });
 
     it('debería renderizar null si no hay usuario o pato', () => {
-      ;(useAuth as jest.Mock).mockReturnValue({ user: null })
-      
-      const { container } = render(<PatoDetailPage />)
-      
-      expect(container.firstChild).toBeNull()
-    })
-  })
+      (useAuth as jest.Mock).mockReturnValue({ user: null });
+
+      const { container } = render(<PatoDetailPage />);
+
+      expect(container.firstChild).toBeNull();
+    });
+  });
 
   describe('Interacciones del usuario', () => {
     it('debería mostrar información completa del pato', () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
       // Verificar que toda la información del pato esté presente
-      expect(screen.getByText(mockPato.comportamiento)).toBeInTheDocument()
-      expect(screen.getByText(mockPato.habitat)).toBeInTheDocument()
-      expect(screen.getByText(mockPato.plumaje)).toBeInTheDocument()
-      expect(screen.getByText(mockPato.alimentacion)).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText(mockPato.comportamiento)).toBeInTheDocument();
+      expect(screen.getByText(mockPato.habitat)).toBeInTheDocument();
+      expect(screen.getByText(mockPato.plumaje)).toBeInTheDocument();
+      expect(screen.getByText(mockPato.alimentacion)).toBeInTheDocument();
+    });
+  });
 
   describe('Accesibilidad', () => {
     it('debería tener texto alternativo en la imagen', () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
-      const imagen = screen.getByAltText('Pato Real')
-      expect(imagen).toBeInTheDocument()
-    })
+      const imagen = screen.getByAltText('Pato Real');
+      expect(imagen).toBeInTheDocument();
+    });
 
     it('debería tener botones con texto descriptivo', () => {
-      render(<PatoDetailPage />)
+      render(<PatoDetailPage />);
 
-      expect(screen.getByText('Volver al Catálogo')).toBeInTheDocument()
-      expect(screen.getByText('🔒 Premium Requerido')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText('Volver al Catálogo')).toBeInTheDocument();
+      expect(screen.getByText('🔒 Premium Requerido')).toBeInTheDocument();
+    });
+  });
 
   describe('Estados del componente', () => {
     it('debería mostrar el estado de carga inicial', () => {
-      ;(useAuth as jest.Mock).mockReturnValue({ user: mockUser })
-      ;(PatoService.getPatos as jest.Mock).mockReturnValue([])
-      
-      render(<PatoDetailPage />)
+      (useAuth as jest.Mock).mockReturnValue({ user: mockUser });
+      (PatoService.getPatos as jest.Mock).mockReturnValue([]);
+
+      render(<PatoDetailPage />);
 
       // El componente debería redirigir inmediatamente
-      expect(mockRouter.push).toHaveBeenCalledWith('/catalogo')
-    })
+      expect(mockRouter.push).toHaveBeenCalledWith('/catalogo');
+    });
 
     it('debería manejar cambios en el plan del usuario', () => {
       // Primero renderizar con usuario gratuito
-      ;(useAuth as jest.Mock).mockReturnValue({ user: mockUser })
-      const { rerender } = render(<PatoDetailPage />)
+      (useAuth as jest.Mock).mockReturnValue({ user: mockUser });
+      const { rerender } = render(<PatoDetailPage />);
 
-      expect(screen.getByText('🔒 Premium Requerido')).toBeInTheDocument()
+      expect(screen.getByText('🔒 Premium Requerido')).toBeInTheDocument();
 
       // Cambiar a usuario premium
-      ;(useAuth as jest.Mock).mockReturnValue({ user: mockPremiumUser })
-      rerender(<PatoDetailPage />)
+      (useAuth as jest.Mock).mockReturnValue({ user: mockPremiumUser });
+      rerender(<PatoDetailPage />);
 
-      expect(screen.getByText('🎵 Reproducir Sonido')).toBeInTheDocument()
-    })
-  })
-}) 
+      expect(screen.getByText('🎵 Reproducir Sonido')).toBeInTheDocument();
+    });
+  });
+});

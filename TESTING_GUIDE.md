@@ -5,9 +5,10 @@
 Se han creado pruebas unitarias completas para el componente AdminPage y los servicios relacionados. Las pruebas cubren:
 
 ### 1. Componente AdminPage (`__tests__/AdminPage.test.tsx`)
+
 - **Autenticación y Autorización**: Verifica que solo usuarios admin puedan acceder
 - **Carga de Datos**: Prueba la carga inicial de patos
-- **Operaciones CRUD**: 
+- **Operaciones CRUD**:
   - Crear nuevos patos
   - Editar patos existentes
   - Eliminar patos
@@ -17,12 +18,14 @@ Se han creado pruebas unitarias completas para el componente AdminPage y los ser
 - **Elementos de UI**: Verifica renderizado correcto
 
 ### 2. Servicio PatoService (`__tests__/PatoService.test.ts`)
+
 - **Operaciones de localStorage**: Prueba persistencia de datos
 - **Búsqueda y Filtrado**: Verifica funcionalidad de búsqueda
 - **Manejo de Casos Edge**: Prueba casos límite y errores
 - **Compatibilidad SSR**: Verifica funcionamiento en servidor
 
 ### 3. Contexto de Autenticación (`__tests__/AuthContext.test.tsx`)
+
 - **Estado Inicial**: Verifica carga desde localStorage
 - **Login/Logout**: Prueba autenticación
 - **Registro**: Verifica creación de usuarios
@@ -32,6 +35,7 @@ Se han creado pruebas unitarias completas para el componente AdminPage y los ser
 ## Configuración de Testing
 
 ### Dependencias Instaladas
+
 ```json
 {
   "@testing-library/jest-dom": "^6.4.2",
@@ -44,6 +48,7 @@ Se han creado pruebas unitarias completas para el componente AdminPage y los ser
 ```
 
 ### Archivos de Configuración
+
 - `jest.config.js`: Configuración principal de Jest
 - `jest.setup.js`: Setup global para pruebas
 - `package.json`: Scripts de testing
@@ -69,37 +74,42 @@ npm test -- --testPathPattern="AuthContext"
 ## Problemas Conocidos y Soluciones
 
 ### 1. Problemas de Timers
+
 **Problema**: Errores relacionados con fake timers en React Testing Library
 **Solución**: Se configuraron fake timers globalmente en `jest.config.js`
 
 ### 2. Conflictos de Dependencias
+
 **Problema**: Conflictos entre React 19 y versiones anteriores de testing libraries
 **Solución**: Se actualizaron las dependencias y se usó `--legacy-peer-deps`
 
 ### 3. Problemas de localStorage
+
 **Problema**: localStorage no está disponible en entorno de testing
 **Solución**: Se mockea localStorage en `jest.setup.js`
 
 ## Estructura de Pruebas
 
 ### Patrón de Pruebas Utilizado
+
 ```typescript
 describe('ComponentName', () => {
   beforeEach(() => {
     // Setup
-  })
+  });
 
   describe('Feature', () => {
     it('should do something', () => {
       // Arrange
       // Act
       // Assert
-    })
-  })
-})
+    });
+  });
+});
 ```
 
 ### Mocks Utilizados
+
 - `localStorage`: Mock completo para persistencia
 - `useRouter`: Mock de Next.js router
 - `PatoService`: Mock del servicio de patos
@@ -108,6 +118,7 @@ describe('ComponentName', () => {
 ## Cobertura de Pruebas
 
 Las pruebas están configuradas para mantener una cobertura mínima del 80% en:
+
 - **Branches**: 80%
 - **Functions**: 80%
 - **Lines**: 80%
@@ -116,6 +127,7 @@ Las pruebas están configuradas para mantener una cobertura mínima del 80% en:
 ## Casos de Prueba Cubiertos
 
 ### AdminPage
+
 - ✅ Renderizado con usuario admin
 - ✅ Redirección para usuarios no autenticados
 - ✅ Redirección para usuarios no admin
@@ -128,6 +140,7 @@ Las pruebas están configuradas para mantener una cobertura mínima del 80% en:
 - ✅ Estados vacíos
 
 ### PatoService
+
 - ✅ Operaciones CRUD completas
 - ✅ Búsqueda y filtrado
 - ✅ Persistencia en localStorage
@@ -136,6 +149,7 @@ Las pruebas están configuradas para mantener una cobertura mínima del 80% en:
 - ✅ Validación de datos
 
 ### AuthContext
+
 - ✅ Estado inicial
 - ✅ Login/Logout
 - ✅ Registro de usuarios
@@ -154,17 +168,20 @@ Las pruebas están configuradas para mantener una cobertura mínima del 80% en:
 ## Troubleshooting
 
 ### Error: "Cannot find module"
+
 ```bash
 # Limpiar cache de Jest
 npx jest --clearCache
 ```
 
 ### Error: "localStorage is not defined"
+
 ```bash
 # Verificar que jest.setup.js esté configurado correctamente
 ```
 
 ### Error: "React state updates not wrapped in act"
+
 ```bash
 # Usar act() para envolver actualizaciones de estado
 import { act } from '@testing-library/react'
@@ -175,4 +192,4 @@ import { act } from '@testing-library/react'
 - [Jest Documentation](https://jestjs.io/docs/getting-started)
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 - [Next.js Testing](https://nextjs.org/docs/testing)
-- [TypeScript Testing](https://jestjs.io/docs/getting-started#using-typescript) 
+- [TypeScript Testing](https://jestjs.io/docs/getting-started#using-typescript)

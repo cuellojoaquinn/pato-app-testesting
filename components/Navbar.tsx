@@ -1,12 +1,12 @@
-"use client"
+'use client';
 
-import Link from "next/link"
-import { useAuth } from "@/contexts/AuthContext"
-import { Button } from "@/components/ui/button"
-import { LogOut, User } from "lucide-react"
+import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { LogOut, User } from 'lucide-react';
 
 export default function Navbar() {
-  const { user, logout } = useAuth()
+  const { user, logout } = useAuth();
 
   return (
     <nav className="bg-blue-600 text-white shadow-lg">
@@ -22,7 +22,7 @@ export default function Navbar() {
                 <Link href="/catalogo" className="hover:text-blue-200">
                   Catálogo
                 </Link>
-                {user.rol === "admin" && (
+                {user.rol === 'admin' && (
                   <Link href="/admin" className="hover:text-blue-200">
                     Administración
                   </Link>
@@ -57,5 +57,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }

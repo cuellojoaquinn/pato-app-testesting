@@ -23,17 +23,20 @@ Una aplicación web moderna para explorar y gestionar un catálogo de especies d
 ## Instalación
 
 1. Clona el repositorio:
+
 ```bash
 git clone <repository-url>
 cd pato-app-testesting
 ```
 
 2. Instala las dependencias:
+
 ```bash
 npm install
 ```
 
 3. Ejecuta el servidor de desarrollo:
+
 ```bash
 npm run dev
 ```
@@ -83,6 +86,7 @@ pato-app-testesting/
 El proyecto incluye un conjunto completo de pruebas unitarias que cubren:
 
 ### Componentes
+
 - **AdminPage**: Pruebas del panel de administración
   - Autenticación y autorización
   - Carga de datos
@@ -92,6 +96,7 @@ El proyecto incluye un conjunto completo de pruebas unitarias que cubren:
   - Elementos de UI
 
 ### Servicios
+
 - **PatoService**: Pruebas del servicio de gestión de patos
   - Operaciones de localStorage
   - Búsqueda y filtrado
@@ -99,6 +104,7 @@ El proyecto incluye un conjunto completo de pruebas unitarias que cubren:
   - Compatibilidad con SSR
 
 ### Contextos
+
 - **AuthContext**: Pruebas del contexto de autenticación
   - Estado inicial
   - Login y logout
@@ -122,6 +128,7 @@ npm run test:coverage
 ### Cobertura de Pruebas
 
 Las pruebas están configuradas para mantener una cobertura mínima del 80% en:
+
 - Branches (ramas de código)
 - Functions (funciones)
 - Lines (líneas de código)
@@ -130,12 +137,14 @@ Las pruebas están configuradas para mantener una cobertura mínima del 80% en:
 ## Usuarios de Prueba
 
 ### Administrador
+
 - **Email**: juan@example.com
 - **Contraseña**: 123456
 - **Rol**: admin
 - **Plan**: pago
 
 ### Usuario Regular
+
 - **Email**: maria@example.com
 - **Contraseña**: 123456
 - **Rol**: user
@@ -144,6 +153,7 @@ Las pruebas están configuradas para mantener una cobertura mínima del 80% en:
 ## Funcionalidades
 
 ### Para Usuarios
+
 - Explorar el catálogo de especies
 - Buscar y filtrar especies
 - Ver información detallada de cada pato
@@ -151,6 +161,7 @@ Las pruebas están configuradas para mantener una cobertura mínima del 80% en:
 - Actualizar plan de suscripción
 
 ### Para Administradores
+
 - Todas las funcionalidades de usuario
 - Panel de administración
 - Agregar nuevas especies
