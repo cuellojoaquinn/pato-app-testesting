@@ -1,0 +1,33 @@
+name: CI for PR to main (hotfix)
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  hotfix-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint & Format
+        run: npm run lint && npm run format:check
+
+      - name: Unit Tests
+        run: npm test -- --coverage
+
+      - name: Integration Tests
+        run: npm run test:integration
+
+      - name: Regression Suite
+        run: npm run test:regression
+
+      - name: Build
+        run: npm run build
